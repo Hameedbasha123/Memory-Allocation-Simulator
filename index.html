@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Memory Allocation Simulator</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body>
+    <h1>Memory Allocation Simulator</h1>
+    <form id="allocationForm">
+        <label>Process Size:</label>
+        <input type="number" id="process_size" required>
+        <label>Strategy:</label>
+        <select id="strategy">
+            <option value="first_fit">First Fit</option>
+            <option value="best_fit">Best Fit</option>
+            <option value="worst_fit">Worst Fit</option>
+        </select>
+        <button type="submit">Allocate</button>
+    </form>
+    <div id="result"></div>
+    <script>
+        document.getElementById("allocationForm").onsubmit = async function(e) {
+            e.preventDefault();
+            const size = document.getElementById("process_size").value;
+            const strategy = document.getElementById("strategy").value;
+            const response = await fetch("/allocate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ process_size: size, strategy: strategy })
+            });
+            const data = await response.json();
+            document.getElementById("result").innerText = 
+                "Allocation: " + data.allocation_result + "\nStats: " + JSON.stringify(data.stats);
+        };
+    </script>
+</body>
+</html>
